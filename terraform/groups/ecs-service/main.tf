@@ -63,7 +63,7 @@ module "ecs-service" {
   task_environment          = local.task_environment
   task_secrets              = local.task_secrets
   app_environment_filename  = local.app_environment_filename
-  #use_set_environment_files = true
+  use_set_environment_files = true
 }
 
 module "secrets" {
