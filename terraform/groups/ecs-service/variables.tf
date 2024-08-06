@@ -103,7 +103,7 @@ variable "ssm_version_prefix" {
   description = "String to use as a prefix to the names of the variables containing variables and secrets version."
   default     = "SSM_VERSION_"
 }
-variable "filing_history_delta_consumer_version" {
+variable "document_store_delta_consumer_version" {
   type        = string
-  description = "The version of the filing-history-delta-consumer container to run."
+  description = "The version of the document-store-delta-consumer container to run."
 }
