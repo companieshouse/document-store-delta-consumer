@@ -20,7 +20,8 @@ public class DocumentApiClient {
     private final Supplier<InternalApiClient> internalApiClientFactory;
     private final DocumentApiResponseHandler documentApiResponseHandler;
 
-    public DocumentApiClient(Supplier<InternalApiClient> internalApiClientFactory, DocumentApiResponseHandler documentApiResponseHandler) {
+    public DocumentApiClient(Supplier<InternalApiClient> internalApiClientFactory,
+                             DocumentApiResponseHandler documentApiResponseHandler) {
         this.internalApiClientFactory = internalApiClientFactory;
         this.documentApiResponseHandler = documentApiResponseHandler;
     }
@@ -31,7 +32,7 @@ public class DocumentApiClient {
 
         ApiResponse<CreateDocumentResponseApi> response = null;
         try {
-            response = client.privateDeltaResourceHandler().createDocument(POST_REQUEST_URI, requestBody, setNoDeletionHeader).execute();
+            response = client.privateDocumentResourceHandler().createDocument(POST_REQUEST_URI, requestBody, setNoDeletionHeader).execute();
         } catch (ApiErrorResponseException ex) {
             documentApiResponseHandler.handle(ex);
             return null;

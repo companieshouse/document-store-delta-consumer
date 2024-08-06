@@ -11,7 +11,7 @@ import uk.gov.companieshouse.documentstore.consumer.logging.DataMapHolder;
 @Component
 public class FilingHistoryDocumentMetadataApiClient {
 
-    private static final String PUT_REQUEST_URI = "/company/%s/filing-history/%s/links";
+    private static final String PATCH_REQUEST_URI = "/company/%s/filing-history/%s/document-metadata";
 
     private final Supplier<InternalApiClient> internalApiClientFactory;
     private final FilingHistoryDocumentMetadataApiResponseHandler filingHistoryDocumentMetadataApiResponseHandler;
@@ -25,7 +25,7 @@ public class FilingHistoryDocumentMetadataApiClient {
         InternalApiClient client = internalApiClientFactory.get();
         client.getHttpClient().setRequestId(DataMapHolder.getRequestId());
 
-        final String formattedUri = PUT_REQUEST_URI.formatted(companyNumber, filingHistoryId);
+        final String formattedUri = PATCH_REQUEST_URI.formatted(companyNumber, filingHistoryId);
 
         try {
             client.privateFilingHistoryDocumentMetadataResourceHandler()

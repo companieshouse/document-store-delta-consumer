@@ -1,32 +1,36 @@
 package uk.gov.companieshouse.documentstore.consumer.mapper;
 
+import com.google.common.base.Strings;
+import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
 import uk.gov.companieshouse.api.model.document.CreateDocumentApi;
-import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.documentstore.consumer.exception.NonRetryableException;
+import uk.gov.companieshouse.documentstore.consumer.logging.DataMapHolder;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-
-import java.time.Instant;
 
 import static uk.gov.companieshouse.documentstore.consumer.Application.NAMESPACE;
 import static uk.gov.companieshouse.documentstore.consumer.mapper.DocumentMapperConstants.TRANSACTION_ID_CHIPS_PREFIX;
 import static uk.gov.companieshouse.documentstore.consumer.mapper.DocumentMapperConstants.TRANSACTION_ID_CHIPS_PREFIX_REGEX;
 
+@Component
 public class DocumentApiMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
-
     private static final String INVALID_PAGES_MESSAGE = "Invalid pages value in delta, pages=[%d]";
     private static final String INVALID_PAGES_FORMAT_MESSAGE = "Invalid format for pages value in delta, pages=[%s]";
 
-    // Regex copied directly from perl equivalent, ensures filename ends with ".tif", ".tiff", ."pdf" or ".zip" to be
-    // allowed to have a value for "pages" field
-    private static final String VALID_PAGES_FILENAME_ENDING_REGEX = "\\.(?:tif(f)?|pdf|zip)$";
+    // Ensures filename ends with ".tif", ".tiff", ."pdf" or ".zip" to be allowed to have a value for "pages" field
+    private static final String VALID_PAGES_FILENAME_ENDING_REGEX = ".*\\.(tif|tiff|pdf|zip)$";
+
+    // parsing from date requires adding time element to expecting "yyyy-MM-dd" string
+    private static final String TIME_MIDNIGHT_UTC = "T00:00:00.00Z";
+
 
     public DocumentApiMapper() {}
 
     public CreateDocumentApi documentStoreDeltaToApi(DocumentStoreDelta delta) {
+        LOGGER.trace(String.format("Mapping delta [%s]", delta), DataMapHolder.getLogMap());
         CreateDocumentApi api = new CreateDocumentApi();
         api.setBarcode(delta.getBarcode());
         api.setCategory(getMappedCategory(delta));
@@ -37,6 +41,7 @@ public class DocumentApiMapper {
         api.setSignificantDateType(getMappedSignificantDateType(delta));
         api.setStoredImageUrl(delta.getStoredImageUrl());
         api.setTransactionId(getMappedTransactionId(delta));
+        LOGGER.trace(String.format("Mapped delta to CreateDocumentApi [%s]", api), DataMapHolder.getLogMap());
         return api;
     }
 
@@ -46,10 +51,12 @@ public class DocumentApiMapper {
 
     private Integer getMappedPages(DocumentStoreDelta delta) {
         if (delta.getPages() == null) {
+            LOGGER.trace("Mapping null pages to null", DataMapHolder.getLogMap());
             return null; // no pages value is valid so just return null
         }
 
         if (!canStoredImageUrlHavePages(delta.getStoredImageUrl())) {
+            LOGGER.trace(String.format("Mapping pages to null due to filetype [%s]", delta.getStoredImageUrl()), DataMapHolder.getLogMap());
             return null; // only certain file types can have page count, others cannot have a page count even if it is set in the delta
         }
 
@@ -57,9 +64,11 @@ public class DocumentApiMapper {
             int parsedPages = Integer.parseInt(delta.getPages());
 
             if (parsedPages > 0) {
+                LOGGER.trace(String.format("Mapping valid pages [%d]", parsedPages), DataMapHolder.getLogMap());
                 return parsedPages; // positive page count is valid
             }
             if (parsedPages == 0) {
+                LOGGER.trace("Mapping 0 pages to null", DataMapHolder.getLogMap());
                 return null; // page count of 0 is invalid in document API but expected in delta so return null if 0 is the parsed value
             }
 
@@ -78,11 +87,26 @@ public class DocumentApiMapper {
         return storedImageUrl.matches(VALID_PAGES_FILENAME_ENDING_REGEX);
     }
 
-    private Instant getMappedSignificantDate(DocumentStoreDelta delta) {
-        return Instant.parse(delta.getSignificantDate());
+    private String getMappedSignificantDate(DocumentStoreDelta delta) {
+        if (Strings.isNullOrEmpty(delta.getSignificantDate())) {
+            LOGGER.trace(String.format("Mapping null or empty significant date [%s]", delta.getSignificantDate()), DataMapHolder.getLogMap());
+            return null;
+        }
+        if (delta.getSignificantDate().endsWith(TIME_MIDNIGHT_UTC)) {
+            LOGGER.trace(String.format("Mapping direct significant date [%s]", delta.getSignificantDate()), DataMapHolder.getLogMap());
+            return delta.getSignificantDate();
+        }
+        LOGGER.trace(String.format("Mapping appended time onto significant date [%s]", delta.getSignificantDate()), DataMapHolder.getLogMap());
+        // significant date format "yyyy-MM-dd" appended with midnight utc time before parsing pure date value
+        return delta.getSignificantDate() + TIME_MIDNIGHT_UTC;
     }
 
     private String getMappedSignificantDateType(DocumentStoreDelta delta) {
+        if (delta.getSignificantDateType() == null) {
+            LOGGER.trace(String.format("Mapping null significant date type [%s]", delta.getSignificantDateType()), DataMapHolder.getLogMap());
+            return null;
+        }
+        LOGGER.trace(String.format("Mapping present significant date type [%s]", delta.getSignificantDateType()), DataMapHolder.getLogMap());
         return delta.getSignificantDateType().toString();
     }
 
@@ -91,9 +115,11 @@ public class DocumentApiMapper {
 
         // ensure "CHIPS:" prefix exists without duplicating it
         if (!transactionId.matches(TRANSACTION_ID_CHIPS_PREFIX_REGEX)) {
-            transactionId = TRANSACTION_ID_CHIPS_PREFIX + transactionId;
+            LOGGER.trace(String.format("Mapping prefixed transaction id [%s]", transactionId), DataMapHolder.getLogMap());
+            return TRANSACTION_ID_CHIPS_PREFIX + transactionId;
         }
 
+        LOGGER.trace(String.format("Mapping direct transaction id [%s]", transactionId), DataMapHolder.getLogMap());
         return transactionId;
     }
 }

@@ -9,9 +9,6 @@ import uk.gov.companieshouse.documentstore.consumer.transformer.FilingHistoryDoc
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static uk.gov.companieshouse.documentstore.consumer.Application.NAMESPACE;
 
 @Component
@@ -35,17 +32,21 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
 
         // only update filing history with doc metadata link for PDF and ZIP files
         if (CONTENT_TYPE_PDF.equals(contentType) || CONTENT_TYPE_ZIP.equals(contentType)) {
+            LOGGER.info(String.format(
+                    "Updating filing history document metadata for content_type=[%s], document_id=[%s]",
+                    contentType, createDocumentResponseApi.getDocumentId()));
+
             FilingHistoryDocumentMetadataUpdateApi apiRequest = transformer.transform(createDocumentResponseApi);
-            String filingHistoryId = transformer.transformFilingHistoryId(documentStore, createDocumentResponseApi);
+            String filingHistoryId = transformer.transformFilingHistoryId(documentStore);
             fhApiClient.updateDocumentMetadataLink(apiRequest, documentStore.getCompanyNumber(), filingHistoryId);
 
             LOGGER.info(String.format(
-                    "Updated filing history document metadata for content_type=[%s], filing_history_id=[%s], document_id=[%s]",
-                    contentType, filingHistoryId, createDocumentResponseApi.getDocumentId()));
-        } else {
-            LOGGER.info(String.format(
-                    "Skipping filing history document metadata for content_type=[%s], document_id=[%s]",
-                    contentType, createDocumentResponseApi.getDocumentId()));
+                    "Updated filing history document metadata for content_type=[%s], document_id=[%s], filing_history_id=[%s]",
+                    contentType, createDocumentResponseApi.getDocumentId(), filingHistoryId));
+            return;
         }
+        LOGGER.info(String.format(
+                "Skipping filing history document metadata for content_type=[%s], document_id=[%s]",
+                contentType, createDocumentResponseApi.getDocumentId()));
     }
 }
