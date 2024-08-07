@@ -23,6 +23,8 @@ public class DocumentApiMapper {
     // Ensures filename ends with ".tif", ".tiff", ."pdf" or ".zip" to be allowed to have a value for "pages" field
     private static final String VALID_PAGES_FILENAME_ENDING_REGEX = ".*\\.(tif|tiff|pdf|zip)$";
 
+    // date format from CHIPS begins with "yyyy-MM-dd" which is 10 characters to use from start of date string
+    private static final int DATE_FORMAT_SUBSTRING_LENGTH = 10;
     // parsing from date requires adding time element to expecting "yyyy-MM-dd" string
     private static final String TIME_MIDNIGHT_UTC = "T00:00:00.00Z";
 
@@ -92,13 +94,14 @@ public class DocumentApiMapper {
             LOGGER.trace(String.format("Mapping null or empty significant date [%s]", delta.getSignificantDate()), DataMapHolder.getLogMap());
             return null;
         }
-        if (delta.getSignificantDate().endsWith(TIME_MIDNIGHT_UTC)) {
-            LOGGER.trace(String.format("Mapping direct significant date [%s]", delta.getSignificantDate()), DataMapHolder.getLogMap());
-            return delta.getSignificantDate();
-        }
-        LOGGER.trace(String.format("Mapping appended time onto significant date [%s]", delta.getSignificantDate()), DataMapHolder.getLogMap());
-        // significant date format "yyyy-MM-dd" appended with midnight utc time before parsing pure date value
-        return delta.getSignificantDate() + TIME_MIDNIGHT_UTC;
+
+        // date format from CHIPS begins with "yyyy-MM-dd" which is 10 characters to use from start of date string
+        // the date is all we care about and time format is inconsistent so ignore any time format provided
+        final String sigDateSubstring = delta.getSignificantDate().substring(0, DATE_FORMAT_SUBSTRING_LENGTH);
+        LOGGER.trace(String.format("Mapping appended time onto significant date substring [%s]", sigDateSubstring), DataMapHolder.getLogMap());
+
+        // significant date substring format "yyyy-MM-dd" appended with midnight utc time to send to document API
+        return sigDateSubstring + TIME_MIDNIGHT_UTC;
     }
 
     private String getMappedSignificantDateType(DocumentStoreDelta delta) {
