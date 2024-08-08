@@ -21,13 +21,19 @@ public class FilingHistoryDocumentMetadataApiResponseHandler {
 
     public void handle(ApiErrorResponseException ex) {
         final int statusCode = ex.getStatusCode();
-        if (HttpStatus.valueOf(statusCode).is5xxServerError()) {
+        if (isRetryableStatusCode(statusCode)) {
             LOGGER.info(API_ERROR_RESPONSE_MESSAGE.formatted(statusCode), DataMapHolder.getLogMap());
             throw new RetryableException(API_ERROR_RESPONSE_MESSAGE.formatted(statusCode), ex);
         } else {
             LOGGER.error(API_ERROR_RESPONSE_MESSAGE.formatted(statusCode), DataMapHolder.getLogMap());
             throw new NonRetryableException(API_ERROR_RESPONSE_MESSAGE.formatted(statusCode), ex);
         }
+    }
+
+    private boolean isRetryableStatusCode(int statusCode) {
+        HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
+        // retry 5XX errors and 404 errors as 404 could be down to FH delta processing times
+        return httpStatus.is5xxServerError() || httpStatus == HttpStatus.NOT_FOUND;
     }
 
     public void handle(URIValidationException ex) {
