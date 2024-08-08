@@ -35,12 +35,12 @@ variable "desired_task_count" {
 variable "required_cpus" {
   type = number
   description = "The required cpu resource for this service. 1024 here is 1 vCPU"
-  default = 256 # defaulted low for dev environments, override for production
+  default = 512
 }
 variable "required_memory" {
   type = number
   description = "The required memory for this service"
-  default = 512 # defaulted low for node service in dev environments, override for production
+  default = 1024
 }
 
 variable "max_task_count" {
@@ -68,6 +68,11 @@ variable "service_autoscale_target_value_cpu" {
   type        = number
   description = "Target CPU percentage for the ECS Service to autoscale on"
   default     = 50 # 100 disables autoscaling using CPU as a metric
+}
+variable "service_autoscale_scale_in_cooldown" {
+  type        = number
+  description = "Cooldown in seconds for ECS Service scale in"
+  default     = 600
 }
 variable "service_scaledown_schedule" {
   type        = string

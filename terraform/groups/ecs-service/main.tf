@@ -47,17 +47,18 @@ module "ecs-service" {
   name_prefix  = local.name_prefix
 
   # Service performance and scaling configs
-  desired_task_count                 = var.desired_task_count
-  max_task_count                     = var.max_task_count
-  required_cpus                      = var.required_cpus
-  required_memory                    = var.required_memory
-  service_autoscale_enabled          = var.service_autoscale_enabled
-  service_autoscale_target_value_cpu = var.service_autoscale_target_value_cpu
-  service_scaledown_schedule         = var.service_scaledown_schedule
-  service_scaleup_schedule           = var.service_scaleup_schedule
-  use_capacity_provider              = var.use_capacity_provider
-  use_fargate                        = var.use_fargate
-  fargate_subnets                    = local.application_subnet_ids
+  desired_task_count                  = var.desired_task_count
+  max_task_count                      = var.max_task_count
+  required_cpus                       = var.required_cpus
+  required_memory                     = var.required_memory
+  service_autoscale_enabled           = var.service_autoscale_enabled
+  service_autoscale_target_value_cpu  = var.service_autoscale_target_value_cpu
+  service_autoscale_scale_in_cooldown = var.service_autoscale_scale_in_cooldown
+  service_scaledown_schedule          = var.service_scaledown_schedule
+  service_scaleup_schedule            = var.service_scaleup_schedule
+  use_capacity_provider               = var.use_capacity_provider
+  use_fargate                         = var.use_fargate
+  fargate_subnets                     = local.application_subnet_ids
 
   # Service environment variable and secret configs
   task_environment          = local.task_environment
