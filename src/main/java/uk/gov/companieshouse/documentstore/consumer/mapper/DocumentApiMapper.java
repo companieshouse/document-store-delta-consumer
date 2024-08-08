@@ -52,34 +52,30 @@ public class DocumentApiMapper {
     }
 
     private Integer getMappedPages(DocumentStoreDelta delta) {
-        if (delta.getPages() == null) {
-            LOGGER.trace("Mapping null pages to null", DataMapHolder.getLogMap());
-            return null; // no pages value is valid so just return null
+        if (delta.getPageCount() == null) {
+            LOGGER.trace("Mapping null page count to null", DataMapHolder.getLogMap());
+            return null; // no page count value is valid so just return null
         }
 
+        final int pagesInt = delta.getPageCount().intValue();
+        if (pagesInt == 0) {
+            LOGGER.trace("Mapping 0 page count to null", DataMapHolder.getLogMap());
+            return null; // 0 value is valid input but invalid string value so just return null
+        }
+
+        // for non-null page count check whether to use it based on file type in url
         if (!canStoredImageUrlHavePages(delta.getStoredImageUrl())) {
-            LOGGER.trace(String.format("Mapping pages to null due to filetype [%s]", delta.getStoredImageUrl()), DataMapHolder.getLogMap());
+            LOGGER.trace(String.format("Mapping page count to null due to filetype [%s]", delta.getStoredImageUrl()), DataMapHolder.getLogMap());
             return null; // only certain file types can have page count, others cannot have a page count even if it is set in the delta
         }
 
-        try {
-            int parsedPages = Integer.parseInt(delta.getPages());
-
-            if (parsedPages > 0) {
-                LOGGER.trace(String.format("Mapping valid pages [%d]", parsedPages), DataMapHolder.getLogMap());
-                return parsedPages; // positive page count is valid
-            }
-            if (parsedPages == 0) {
-                LOGGER.trace("Mapping 0 pages to null", DataMapHolder.getLogMap());
-                return null; // page count of 0 is invalid in document API but expected in delta so return null if 0 is the parsed value
-            }
-
-            // negative page count is invalid and non-retryable
-            throw new NonRetryableException(String.format(INVALID_PAGES_MESSAGE, parsedPages));
-        } catch (NumberFormatException nfe) {
-            // invalid format in pages value is non-retryable
-            throw new NonRetryableException(String.format(INVALID_PAGES_FORMAT_MESSAGE, delta.getPages()), nfe);
+        if (pagesInt > 0) {
+            LOGGER.trace(String.format("Mapping valid page count [%d]", pagesInt), DataMapHolder.getLogMap());
+            return pagesInt; // positive page count is valid
         }
+
+        // negative page count is invalid and non-retryable
+        throw new NonRetryableException(String.format(INVALID_PAGES_MESSAGE, pagesInt));
     }
 
     private boolean canStoredImageUrlHavePages(String storedImageUrl) {
