@@ -31,9 +31,7 @@ public class FilingHistoryDocumentMetadataApiResponseHandler {
     }
 
     private boolean isRetryableStatusCode(int statusCode) {
-        HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
-        // retry 5XX errors and 404 errors as 404 could be down to FH delta processing times
-        return httpStatus.is5xxServerError() || httpStatus == HttpStatus.NOT_FOUND;
+        return !(HttpStatus.BAD_REQUEST.value() == statusCode || HttpStatus.CONFLICT.value() == statusCode);
     }
 
     public void handle(URIValidationException ex) {
