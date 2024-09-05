@@ -44,7 +44,8 @@ public class DocumentApiClient {
         if (response == null) {
             documentApiResponseHandler.handleNullResponse();
             return null;
-        } else if (response.getStatusCode() != HttpStatusCodes.STATUS_CODE_CREATED) {
+        } else if (!HttpStatusCodes.isSuccess(response.getStatusCode())) {
+
             documentApiResponseHandler.handleUnexpectedStatusCode(response.getStatusCode());
             return null;
         }
