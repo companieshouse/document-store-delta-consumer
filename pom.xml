@@ -29,7 +29,7 @@
     <skip.integration.tests>false</skip.integration.tests>
 
     <!--companies house-->
-    <structured-logging.version>3.0.1</structured-logging.version>
+    <structured-logging.version>3.0.14</structured-logging.version>
     <sdk-manager-java.version>3.0.3</sdk-manager-java.version>
     <private-api-sdk-java.version>4.0.185</private-api-sdk-java.version>
     <data-sync-api-sdk-java.version>1.0.7</data-sync-api-sdk-java.version>

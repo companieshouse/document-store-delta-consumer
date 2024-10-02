@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.documentstore.consumer.transformer;
 
-import consumer.exception.RetryableErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
@@ -17,11 +16,7 @@ public class DocumentApiTransformer {
         this.mapper = mapper;
     }
 
-    public CreateDocumentApi transform(DocumentStoreDelta delta) throws RetryableErrorException {
-        try {
-            return mapper.documentStoreDeltaToApi(delta);
-        } catch (Exception exception) {
-            throw new RetryableErrorException("Unable to map to Document API object", exception);
-        }
+    public CreateDocumentApi transform(DocumentStoreDelta delta) {
+        return mapper.documentStoreDeltaToApi(delta);
     }
 }
