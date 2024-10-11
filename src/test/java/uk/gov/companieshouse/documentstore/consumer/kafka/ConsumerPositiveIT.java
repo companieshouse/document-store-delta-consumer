@@ -1,8 +1,7 @@
 package uk.gov.companieshouse.documentstore.consumer.kafka;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.requestMadeFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -13,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -35,10 +35,12 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import uk.gov.companieshouse.delta.ChsDelta;
 
-
+@SpringBootTest
+@WireMockTest(httpPort = 8888)
 class ConsumerPositiveIT extends AbstractKafkaIT {
 
     private static final String COMPANY_NUMBER = "12345678";
+    private static final String TRANSACTION_ID = "3043972675";
 
     @Autowired
     private KafkaConsumer<String, byte[]> testConsumer;
@@ -61,20 +63,32 @@ class ConsumerPositiveIT extends AbstractKafkaIT {
     }
 
     @Test
-    void shouldConsumeRegistersDeltaTopicAndProcessDelta() throws Exception {
+    void shouldConsumeDocumentStoreDeltaTopicAndProcessDelta() throws Exception {
         // given
-        final String delta = IOUtils.resourceToString("/document-store-delta.json", StandardCharsets.UTF_8);
+        final String delta = IOUtils.resourceToString("/data/upsert/document-store-delta.json", StandardCharsets.UTF_8);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Encoder encoder = EncoderFactory.get().directBinaryEncoder(outputStream, null);
         DatumWriter<ChsDelta> writer = new ReflectDatumWriter<>(ChsDelta.class);
         writer.write(new ChsDelta(delta, 0, "context_id", false), encoder);
 
-        final String expectedRequestBody = IOUtils.resourceToString("/registers-request-body.json",
+        final String expectedDocuStoreRequestBody = IOUtils.resourceToString("/data/upsert/document-store-request-body.json",
                 StandardCharsets.UTF_8);
-        final String expectedRequestUri = "/company/%s/registers".formatted(COMPANY_NUMBER);
+        final String expectedFilingHistoryRequestBody = IOUtils.resourceToString("/data/upsert/filing-history-request-body.json",
+                StandardCharsets.UTF_8);
 
-        stubFor(put(urlEqualTo(expectedRequestUri))
+        final String expectedFilingHistoryRequestUri = "/company/%s/filing-history/%s/document-metadata"
+                .formatted(COMPANY_NUMBER, TRANSACTION_ID);
+        final String expectedDocumentStoreRequestURI = "/document";
+
+        stubFor(post(urlEqualTo(expectedDocumentStoreRequestURI)).inScenario("Process Delta Test")
+                .whenScenarioStateIs(Scenario.STARTED)
+                .willReturn(aResponse()
+                        .withStatus(200))
+                .willSetStateTo("Document Store successfully called"));
+
+        stubFor(put(urlEqualTo(expectedFilingHistoryRequestUri)).inScenario("Process Delta Test")
+                .whenScenarioStateIs("Document Store successfully called")
                 .willReturn(aResponse()
                         .withStatus(200)));
 
@@ -92,22 +106,26 @@ class ConsumerPositiveIT extends AbstractKafkaIT {
         assertThat(KafkaUtils.noOfRecordsForTopic(consumerRecords, KafkaUtils.ERROR_TOPIC)).isZero();
         assertThat(KafkaUtils.noOfRecordsForTopic(consumerRecords, KafkaUtils.INVALID_TOPIC)).isZero();
 
-        verify(requestMadeFor(new PostRequestMatcher(expectedRequestUri, expectedRequestBody)));
+        verify(requestMadeFor(new PostRequestMatcher(expectedDocumentStoreRequestURI, expectedDocuStoreRequestBody)));
+        verify(requestMadeFor(new PatchRequestMatcher(expectedFilingHistoryRequestUri, expectedFilingHistoryRequestBody)));
     }
 
     @Test
-    void shouldConsumeRegistersTopicAndProcessDeleteDelta() throws Exception {
+    void shouldConsumeDocumentStoreDeltaTopicAndProcessDeltaONLYDOCUSTORE() throws Exception {
         // given
-        final String delta = IOUtils.resourceToString("/registers-delete-delta.json", StandardCharsets.UTF_8);
+        final String delta = IOUtils.resourceToString("/data/upsert/document-store-delta.json", StandardCharsets.UTF_8);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Encoder encoder = EncoderFactory.get().directBinaryEncoder(outputStream, null);
         DatumWriter<ChsDelta> writer = new ReflectDatumWriter<>(ChsDelta.class);
-        writer.write(new ChsDelta(delta, 0, "context_id", true), encoder);
+        writer.write(new ChsDelta(delta, 0, "context_id", false), encoder);
 
-        final String expectedRequestUri = "/company/%s/registers".formatted(COMPANY_NUMBER);
+        final String expectedDocuStoreRequestBody = IOUtils.resourceToString("/data/upsert/document-store-request-body.json",
+                StandardCharsets.UTF_8);
 
-        stubFor(delete(urlEqualTo(expectedRequestUri))
+        final String expectedDocumentStoreRequestURI = "/document";
+
+        stubFor(post(urlEqualTo(expectedDocumentStoreRequestURI))
                 .willReturn(aResponse()
                         .withStatus(200)));
         // when
@@ -124,6 +142,6 @@ class ConsumerPositiveIT extends AbstractKafkaIT {
         assertThat(KafkaUtils.noOfRecordsForTopic(consumerRecords, KafkaUtils.ERROR_TOPIC)).isZero();
         assertThat(KafkaUtils.noOfRecordsForTopic(consumerRecords, KafkaUtils.INVALID_TOPIC)).isZero();
 
-        verify(deleteRequestedFor(urlEqualTo(expectedRequestUri)));
+        verify(requestMadeFor(new PostRequestMatcher(expectedDocumentStoreRequestURI, expectedDocuStoreRequestBody)));
     }
 }
