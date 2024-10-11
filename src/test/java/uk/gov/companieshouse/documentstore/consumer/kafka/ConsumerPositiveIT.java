@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.patch;
 import static com.github.tomakehurst.wiremock.client.WireMock.patchRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.requestMadeFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
@@ -38,7 +37,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.delta.ChsDelta;
 
 @SpringBootTest
@@ -79,33 +77,30 @@ class ConsumerPositiveIT extends AbstractKafkaIT {
         DatumWriter<ChsDelta> writer = new ReflectDatumWriter<>(ChsDelta.class);
         writer.write(new ChsDelta(delta, 0, "context_id", false), encoder);
 
-        final String expectedDocuStoreRequestBody = IOUtils.resourceToString("/data/upsert/document-store-request-body.json",
+        final String expectedDocumentApiRequestBody = IOUtils.resourceToString("/data/upsert/document-store-request-body.json",
                 StandardCharsets.UTF_8);
         final String expectedFilingHistoryRequestBody = IOUtils.resourceToString("/data/upsert/filing-history-request-body.json",
+                StandardCharsets.UTF_8);
+        final String documentApiResponseBody = IOUtils.resourceToString("/data/upsert/document_api_response_body.json",
                 StandardCharsets.UTF_8);
 
         final String encodedTransactionId =
                 Base64.encodeBase64URLSafeString((StringUtils.trim(TRANSACTION_ID) + SALT).getBytes(StandardCharsets.UTF_8));
         final String expectedFilingHistoryRequestUri = "/company/%s/filing-history/%s/document-metadata"
                 .formatted(COMPANY_NUMBER, encodedTransactionId);
-        final String expectedDocumentStoreRequestURI = "/document";
-
-        CreateDocumentResponseApi createDocumentResponseApi = new CreateDocumentResponseApi();
-        createDocumentResponseApi.setDocumentId("docId");
-        createDocumentResponseApi.setPages(3);
-        createDocumentResponseApi.setContentType("application/pdf");
-        final String res = objectMapper.writeValueAsString(createDocumentResponseApi);
+        final String expectedDocumentApiRequestURI = "/document";
 
         stubFor(
-                post(urlEqualTo(expectedDocumentStoreRequestURI))
+                post(urlEqualTo(expectedDocumentApiRequestURI))
                         .willReturn(aResponse()
-                                .withBody(res)
+                                .withBody(documentApiResponseBody)
                                 .withStatus(200))
         );
-
-        stubFor(patch(urlEqualTo(expectedFilingHistoryRequestUri))
+        stubFor(
+                patch(urlEqualTo(expectedFilingHistoryRequestUri))
                 .willReturn(aResponse()
-                        .withStatus(200)));
+                        .withStatus(200))
+        );
 
         // when
         testProducer.send(new ProducerRecord<>(KafkaUtils.MAIN_TOPIC, 0, System.currentTimeMillis(),
@@ -121,12 +116,9 @@ class ConsumerPositiveIT extends AbstractKafkaIT {
         assertThat(KafkaUtils.noOfRecordsForTopic(consumerRecords, KafkaUtils.ERROR_TOPIC)).isZero();
         assertThat(KafkaUtils.noOfRecordsForTopic(consumerRecords, KafkaUtils.INVALID_TOPIC)).isZero();
 
-        verify(1, postRequestedFor(urlMatching(expectedDocumentStoreRequestURI))
-                .withRequestBody(equalToJson(expectedDocuStoreRequestBody)));
-
-        verify(1, patchRequestedFor(urlMatching(expectedFilingHistoryRequestUri)));
-
-        verify(requestMadeFor(new PostRequestMatcher(expectedDocumentStoreRequestURI, expectedDocuStoreRequestBody)));
-        verify(requestMadeFor(new PatchRequestMatcher(expectedFilingHistoryRequestUri, expectedFilingHistoryRequestBody)));
+        verify(1, postRequestedFor(urlMatching(expectedDocumentApiRequestURI))
+                .withRequestBody(equalToJson(expectedDocumentApiRequestBody)));
+        verify(1, patchRequestedFor(urlMatching(expectedFilingHistoryRequestUri))
+                .withRequestBody(equalToJson(expectedFilingHistoryRequestBody)));
     }
 }
