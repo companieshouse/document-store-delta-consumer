@@ -5,6 +5,7 @@ import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
 import uk.gov.companieshouse.api.filinghistory.FilingHistoryDocumentMetadataUpdateApi;
 import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.documentstore.consumer.apiclient.FilingHistoryDocumentMetadataApiClient;
+import uk.gov.companieshouse.documentstore.consumer.logging.DataMapHolder;
 import uk.gov.companieshouse.documentstore.consumer.transformer.FilingHistoryDocumentMetadataTransformer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -34,7 +35,7 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
         if (CONTENT_TYPE_PDF.equals(contentType) || CONTENT_TYPE_ZIP.equals(contentType)) {
             LOGGER.info(String.format(
                     "Updating filing history document metadata for content_type=[%s], document_id=[%s]",
-                    contentType, createDocumentResponseApi.getDocumentId()));
+                    contentType, createDocumentResponseApi.getDocumentId()), DataMapHolder.getLogMap());
 
             FilingHistoryDocumentMetadataUpdateApi apiRequest = transformer.transform(createDocumentResponseApi);
             String filingHistoryId = transformer.transformFilingHistoryId(documentStore);
@@ -42,11 +43,11 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
 
             LOGGER.info(String.format(
                     "Updated filing history document metadata for content_type=[%s], document_id=[%s], filing_history_id=[%s]",
-                    contentType, createDocumentResponseApi.getDocumentId(), filingHistoryId));
+                    contentType, createDocumentResponseApi.getDocumentId(), filingHistoryId), DataMapHolder.getLogMap());
             return;
         }
         LOGGER.info(String.format(
                 "Skipping filing history document metadata for content_type=[%s], document_id=[%s]",
-                contentType, createDocumentResponseApi.getDocumentId()));
+                contentType, createDocumentResponseApi.getDocumentId()), DataMapHolder.getLogMap());
     }
 }

@@ -11,6 +11,7 @@ import org.apache.avro.reflect.ReflectDatumReader;
 import org.apache.kafka.common.serialization.Deserializer;
 import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.documentstore.consumer.exception.InvalidPayloadException;
+import uk.gov.companieshouse.documentstore.consumer.logging.DataMapHolder;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class ChsDeltaDeserialiser implements Deserializer<ChsDelta> {
             return reader.read(null, decoder);
         } catch (IOException | AvroRuntimeException ex) {
             String payload = new String(data);
-            LOGGER.error("Error deserialising message payload: [%s]".formatted(payload), ex);
+            LOGGER.error("Error deserialising message payload: [%s]".formatted(payload), ex, DataMapHolder.getLogMap());
             throw new InvalidPayloadException("Invalid payload: [%s]".formatted(payload), ex);
         }
     }
