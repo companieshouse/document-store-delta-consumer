@@ -37,7 +37,7 @@ public class PostRequestMatcher implements ValueMatcher<Request> {
     }
 
     private MatchResult matchMethod(RequestMethod actualMethod) {
-        return MatchResult.of(RequestMethod.PUT.equals(actualMethod));
+        return MatchResult.of(RequestMethod.POST.equals(actualMethod));
     }
 
     private MatchResult matchBody(String actualBody) {
@@ -46,7 +46,7 @@ public class PostRequestMatcher implements ValueMatcher<Request> {
             CreateDocumentApi expected = MAPPER.readValue(expectedBody, CreateDocumentApi.class);
             CreateDocumentApi actual = MAPPER.readValue(actualBody, CreateDocumentApi.class);
 
-            MatchResult result = MatchResult.of(expected.equals(actual));
+            MatchResult result = MatchResult.of(expected.toString().equals(actual.toString()));
             if (!result.isExactMatch()) {
                 System.out.printf("%nExpected: [%s]%n", expected);
                 System.out.printf("%nActual: [%s]", actual);
