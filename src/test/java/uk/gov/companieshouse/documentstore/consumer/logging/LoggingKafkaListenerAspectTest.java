@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.regex.Pattern;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,30 @@ class LoggingKafkaListenerAspectTest {
 
     private static final String CONTEXT_ID = "context_id";
     private static final String TOPIC = "document-store-delta";
+
+    private static final Pattern INFO_EVENT_PATTERN = Pattern.compile(
+            "event: info|\"event\":\"info\"");
+    private static final Pattern ERROR_EVENT_PATTERN = Pattern.compile(
+            "event: error|\"event\":\"error\"");
+    private static final Pattern MAX_RETRY_ATTEMPTS_REACHED_PATTERN = Pattern.compile(
+            "error: Max retry attempts reached|\"message\":\"Max retry attempts reached\"");
+    private static final Pattern INVALID_PAYLOAD_PATTERN = Pattern.compile(
+            "error: Invalid payload type, payload: \\[message payload]|\"message\":\"Invalid payload type, payload: \\[message payload]\"");
+    private static final Pattern REQUEST_ID_INITIALISED_PATTERN = Pattern.compile(
+            "request_id: context_id|\"request_id\":\"context_id\"");
+    private static final Pattern REQUEST_ID_UNINITIALISED_PATTERN = Pattern.compile(
+            "request_id: uninitialised|\"event\":\"error\"");
+    private static final Pattern RETRY_COUNT_ZERO_PATTERN = Pattern.compile(
+            "retry_count: 0|\"retry_count\":0");
+    private static final Pattern RETRY_COUNT_FOUR_PATTERN = Pattern.compile(
+            "retry_count: 4|\"retry_count\":4");
+    private static final Pattern MAIN_TOPIC_PATTERN = Pattern.compile(
+            "topic: document-store-delta|\"topic\":\"document-store-delta\"");
+    private static final Pattern PARTITION_ZERO_PATTERN = Pattern.compile(
+            "partition: 0|\"partition\":0");
+    private static final Pattern OFFSET_ZERO_PATTERN = Pattern.compile(
+            "offset: 0|\"offset\":0");
+
 
     private LoggingKafkaListenerAspect aspect;
 
@@ -97,13 +122,13 @@ class LoggingKafkaListenerAspectTest {
 
         //then
         assertThrows(RetryableException.class, actual);
-        assertTrue(capture.getOut().contains("\"event\":\"error\""));
-        assertTrue(capture.getOut().contains("\"message\":\"Max retry attempts reached\""));
-        assertTrue(capture.getOut().contains("\"request_id\":\"%s\"".formatted(CONTEXT_ID)));
-        assertTrue(capture.getOut().contains("\"retry_count\":4"));
-        assertTrue(capture.getOut().contains("\"topic\":\"%s\"".formatted(TOPIC)));
-        assertTrue(capture.getOut().contains("\"partition\":0"));
-        assertTrue(capture.getOut().contains("\"offset\":0"));
+        assertTrue(ERROR_EVENT_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(MAX_RETRY_ATTEMPTS_REACHED_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(REQUEST_ID_INITIALISED_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(RETRY_COUNT_FOUR_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(MAIN_TOPIC_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(PARTITION_ZERO_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(OFFSET_ZERO_PATTERN.matcher(capture.getOut()).find());
     }
 
     @Test
@@ -119,9 +144,9 @@ class LoggingKafkaListenerAspectTest {
 
         //then
         assertThrows(NonRetryableException.class, actual);
-        assertTrue(capture.getOut().contains("\"event\":\"error\""));
-        assertTrue(capture.getOut().contains("\"message\":\"Invalid payload type, payload: [message payload]\""));
-        assertTrue(capture.getOut().contains("\"request_id\":\"uninitialised\""));
+        assertTrue(ERROR_EVENT_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(INVALID_PAYLOAD_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(REQUEST_ID_UNINITIALISED_PATTERN.matcher(capture.getOut()).find());
         assertFalse(capture.getOut().contains("retry_count"));
         assertFalse(capture.getOut().contains("topic"));
         assertFalse(capture.getOut().contains("partition"));
@@ -129,11 +154,11 @@ class LoggingKafkaListenerAspectTest {
     }
 
     private static void verifyInfoLogMap(CapturedOutput capture) {
-        assertTrue(capture.getOut().contains("\"event\":\"info\""));
-        assertTrue(capture.getOut().contains("\"request_id\":\"%s\"".formatted(CONTEXT_ID)));
-        assertTrue(capture.getOut().contains("\"retry_count\":0"));
-        assertTrue(capture.getOut().contains("\"topic\":\"%s\"".formatted(TOPIC)));
-        assertTrue(capture.getOut().contains("\"partition\":0"));
-        assertTrue(capture.getOut().contains("\"offset\":0"));
+        assertTrue(INFO_EVENT_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(REQUEST_ID_INITIALISED_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(RETRY_COUNT_ZERO_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(MAIN_TOPIC_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(PARTITION_ZERO_PATTERN.matcher(capture.getOut()).find());
+        assertTrue(OFFSET_ZERO_PATTERN.matcher(capture.getOut()).find());
     }
 }
