@@ -5,22 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
 import uk.gov.companieshouse.api.filinghistory.FilingHistoryDocumentMetadataUpdateApi;
-import uk.gov.companieshouse.api.filinghistory.utils.TransactionKindService;
 import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 
 @ExtendWith(MockitoExtension.class)
-public class FilingHistoryDocumentMetadataMapperTest {
+class FilingHistoryDocumentMetadataMapperTest {
 
     private static final String DOCUMENT_METADATA = "/document/%s";
     private static final String DOCUMENT_ID = "DOC1234";
     private static final String FILING_HISTORY_ID = "QkNERTIzNDVudWxs";
 
-    @Mock
-    TransactionKindService transactionKindService;
     @InjectMocks
     FilingHistoryDocumentMetadataMapper filingHistoryDocumentMetadataMapper;
 

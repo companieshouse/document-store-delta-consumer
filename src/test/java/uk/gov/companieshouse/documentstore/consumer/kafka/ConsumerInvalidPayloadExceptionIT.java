@@ -6,7 +6,6 @@ import static uk.gov.companieshouse.documentstore.consumer.kafka.KafkaUtils.INVA
 import static uk.gov.companieshouse.documentstore.consumer.kafka.KafkaUtils.MAIN_TOPIC;
 import static uk.gov.companieshouse.documentstore.consumer.kafka.KafkaUtils.RETRY_TOPIC;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import org.apache.avro.io.DatumWriter;
@@ -21,11 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import uk.gov.companieshouse.documentstore.consumer.service.DeltaService;
 
 @SpringBootTest
 class ConsumerInvalidPayloadExceptionIT extends AbstractKafkaIT {
@@ -34,18 +29,6 @@ class ConsumerInvalidPayloadExceptionIT extends AbstractKafkaIT {
     private KafkaConsumer<String, byte[]> testConsumer;
     @Autowired
     private KafkaProducer<String, byte[]> testProducer;
-    @Autowired
-    private TestConsumerAspect testConsumerAspect;
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private DeltaService deltaService;
-
-    @DynamicPropertySource
-    static void props(DynamicPropertyRegistry registry) {
-        registry.add("steps", () -> 1);
-    }
 
     @BeforeEach
     public void setup() {

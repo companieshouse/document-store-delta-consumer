@@ -11,7 +11,6 @@ import static uk.gov.companieshouse.documentstore.consumer.kafka.KafkaUtils.INVA
 import static uk.gov.companieshouse.documentstore.consumer.kafka.KafkaUtils.MAIN_TOPIC;
 import static uk.gov.companieshouse.documentstore.consumer.kafka.KafkaUtils.RETRY_TOPIC;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -44,8 +43,6 @@ class ConsumerRetryableExceptionIT extends AbstractKafkaIT {
     private KafkaProducer<String, byte[]> testProducer;
     @Autowired
     private TestConsumerAspect testConsumerAspect;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private DeltaService deltaService;

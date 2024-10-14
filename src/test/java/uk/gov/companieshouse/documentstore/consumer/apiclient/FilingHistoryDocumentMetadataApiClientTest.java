@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.filinghistory.FilingHistoryDocumentMetadataUpdateApi;
-import uk.gov.companieshouse.api.handler.delta.PrivateDeltaResourceHandler;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.handler.filinghistory.PrivateFilingHistoryDocumentMetadataResourceHandler;
 import uk.gov.companieshouse.api.handler.filinghistory.documentmetadata.request.PrivateFilingHistoryDocumentMetadataPatch;

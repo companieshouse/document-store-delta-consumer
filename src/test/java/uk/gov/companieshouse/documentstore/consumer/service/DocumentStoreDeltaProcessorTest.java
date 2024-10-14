@@ -10,12 +10,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
 import uk.gov.companieshouse.api.model.document.CreateDocumentApi;
-import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.documentstore.consumer.apiclient.DocumentApiClient;
 import uk.gov.companieshouse.documentstore.consumer.transformer.DocumentApiTransformer;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentStoreDeltaProcessorTest {
+class DocumentStoreDeltaProcessorTest {
+
     @Mock
     private DocumentApiTransformer documentApiTransformer;
     @Mock
@@ -25,8 +25,6 @@ public class DocumentStoreDeltaProcessorTest {
     private DocumentStoreDelta documentStoreDelta;
     @Mock
     private CreateDocumentApi createDocumentApi;
-    @Mock
-    private CreateDocumentResponseApi createDocumentResponseApi;
 
     @BeforeEach
     void setUp() {
