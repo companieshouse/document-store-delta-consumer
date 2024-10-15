@@ -38,10 +38,10 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
             LOGGER.info("Updating filing history document metadata", DataMapHolder.getLogMap());
 
             FilingHistoryDocumentMetadataUpdateApi apiRequest = transformer.transform(createDocumentResponseApi);
-            String encodedFilingHistoryId = transformer.transformFilingHistoryId(documentStore);
-            DataMapHolder.get().encodedEntityId(encodedFilingHistoryId);
+            String transactionId = transformer.transformFilingHistoryId(documentStore);
+            DataMapHolder.get().transactionId(transactionId);
 
-            fhApiClient.updateDocumentMetadataLink(apiRequest, documentStore.getCompanyNumber(), encodedFilingHistoryId);
+            fhApiClient.updateDocumentMetadataLink(apiRequest, documentStore.getCompanyNumber(), transactionId);
 
             LOGGER.info("Updated filing history document metadata successfully", DataMapHolder.getLogMap());
             return;

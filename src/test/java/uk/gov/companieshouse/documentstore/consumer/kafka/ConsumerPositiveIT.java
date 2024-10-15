@@ -43,7 +43,7 @@ import uk.gov.companieshouse.delta.ChsDelta;
 class ConsumerPositiveIT extends AbstractKafkaIT {
 
     private static final String COMPANY_NUMBER = "12345678";
-    private static final String TRANSACTION_ID = "3043972675";
+    private static final String ENTITY_ID = "3043972675";
     private static final String SALT = "salt";
 
     @Autowired
@@ -81,10 +81,10 @@ class ConsumerPositiveIT extends AbstractKafkaIT {
         final String documentApiResponseBody = IOUtils.resourceToString("/data/upsert/document_api_response_body.json",
                 StandardCharsets.UTF_8);
 
-        final String encodedTransactionId =
-                Base64.encodeBase64URLSafeString((StringUtils.trim(TRANSACTION_ID) + SALT).getBytes(StandardCharsets.UTF_8));
+        final String encodedEntityId =
+                Base64.encodeBase64URLSafeString((StringUtils.trim(ENTITY_ID) + SALT).getBytes(StandardCharsets.UTF_8));
         final String expectedFilingHistoryRequestUri = "/company/%s/filing-history/%s/document-metadata"
-                .formatted(COMPANY_NUMBER, encodedTransactionId);
+                .formatted(COMPANY_NUMBER, encodedEntityId);
         final String expectedDocumentApiRequestURI = "/document";
 
         stubFor(
