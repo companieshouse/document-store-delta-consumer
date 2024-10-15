@@ -53,7 +53,7 @@ class ConsumerNonRetryableExceptionIT extends AbstractKafkaIT {
 
     @BeforeEach
     public void drainKafkaTopics() {
-        testConsumer.poll(Duration.ofMillis(1000));
+        testConsumer.poll(Duration.ofMillis(2000));
     }
 
     @Test
