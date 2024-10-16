@@ -16,7 +16,7 @@ import uk.gov.companieshouse.documentstore.consumer.exception.NonRetryableExcept
 import uk.gov.companieshouse.documentstore.consumer.exception.RetryableException;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentApiResponseHandlerTest {
+class DocumentApiResponseHandlerTest {
     private final DocumentApiResponseHandler responseHandler = new DocumentApiResponseHandler();
 
     @Mock

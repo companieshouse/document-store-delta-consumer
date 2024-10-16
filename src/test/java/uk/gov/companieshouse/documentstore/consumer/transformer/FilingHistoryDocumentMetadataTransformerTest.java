@@ -12,7 +12,7 @@ import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.documentstore.consumer.mapper.FilingHistoryDocumentMetadataMapper;
 
 @ExtendWith(MockitoExtension.class)
-public class FilingHistoryDocumentMetadataTransformerTest {
+class FilingHistoryDocumentMetadataTransformerTest {
 
     @Mock
     FilingHistoryDocumentMetadataMapper filingHistoryDocumentMetadataMapper;

@@ -13,7 +13,7 @@ import uk.gov.companieshouse.api.model.document.CreateDocumentApi;
 import uk.gov.companieshouse.documentstore.consumer.mapper.DocumentApiMapper;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentApiTransformerTest {
+class DocumentApiTransformerTest {
 
     @Mock
     DocumentApiMapper documentApiMapper;

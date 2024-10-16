@@ -15,7 +15,7 @@ import uk.gov.companieshouse.delta.ChsDelta;
 import uk.gov.companieshouse.documentstore.consumer.serdes.DocumentStoreDeltaDeserialiser;
 
 @ExtendWith(MockitoExtension.class)
-public class DeltaServiceTest {
+class DeltaServiceTest {
 
     @Mock
     private DocumentStoreDeltaDeserialiser documentStoreDeltaDeserialiser;

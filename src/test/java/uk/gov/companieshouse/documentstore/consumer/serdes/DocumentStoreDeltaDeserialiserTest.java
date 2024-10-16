@@ -19,7 +19,7 @@ import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
 import uk.gov.companieshouse.documentstore.consumer.exception.NonRetryableException;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentStoreDeltaDeserialiserTest {
+class DocumentStoreDeltaDeserialiserTest {
     public static final String DOCUMENT_STORE_DELTA = "document store delta json string";
     @InjectMocks
     private DocumentStoreDeltaDeserialiser deserialiser;

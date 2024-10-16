@@ -17,7 +17,7 @@ import uk.gov.companieshouse.api.model.document.CreateDocumentApi;
 import uk.gov.companieshouse.documentstore.consumer.exception.NonRetryableException;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentApiMapperTest {
+class DocumentApiMapperTest {
     private DocumentApiMapper documentApiMapper;
 
     @BeforeEach
@@ -97,7 +97,7 @@ public class DocumentApiMapperTest {
         assertEquals("made-up-date", actual.getSignificantDateType());
         assertEquals("testurl.com/filename.rar", actual.getStoredImageUrl());
         assertEquals("filename", actual.getFilename());
-        assertNull(actual.getPages());;
+        assertNull(actual.getPages());
     }
 
     @Test

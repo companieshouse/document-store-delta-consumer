@@ -19,7 +19,7 @@ import uk.gov.companieshouse.documentstore.consumer.apiclient.FilingHistoryDocum
 import uk.gov.companieshouse.documentstore.consumer.transformer.FilingHistoryDocumentMetadataTransformer;
 
 @ExtendWith(MockitoExtension.class)
-public class FilingHistoryDocumentMetadataUpdateProcessorTest {
+class FilingHistoryDocumentMetadataUpdateProcessorTest {
     private static final String COMPANY_NUMBER = "12345678";
     private static final String FILING_HISTORY_ID = "ABCD1234";
     private static final String CONTENT_TYPE_PDF = "application/pdf";
