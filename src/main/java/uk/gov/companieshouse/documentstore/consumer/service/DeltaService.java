@@ -26,6 +26,8 @@ public class DeltaService {
         DataMapHolder.get().companyNumber(documentStore.getCompanyNumber());
         DataMapHolder.get().entityId(documentStore.getTransactionId());
         CreateDocumentResponseApi createDocumentResponseApi = documentStoreDeltaProcessor.processDelta(documentStore);
+        DataMapHolder.get().filingHistoryDocumentId(createDocumentResponseApi.getDocumentId());
+        DataMapHolder.get().documentStoreContentType(createDocumentResponseApi.getContentType());
         filingHistoryDocumentMetadataUpdateProcessor.process(documentStore, createDocumentResponseApi);
     }
 
