@@ -7,7 +7,6 @@ import uk.gov.companieshouse.api.model.document.CreateDocumentApi;
 import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.documentstore.consumer.apiclient.DocumentApiClient;
 import uk.gov.companieshouse.documentstore.consumer.transformer.DocumentApiTransformer;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 
 @Component
 public class DocumentStoreDeltaProcessor {

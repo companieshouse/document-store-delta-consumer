@@ -5,6 +5,7 @@ import uk.gov.companieshouse.api.delta.DocumentStoreDelta;
 import uk.gov.companieshouse.api.filinghistory.FilingHistoryDocumentMetadataUpdateApi;
 import uk.gov.companieshouse.api.model.document.CreateDocumentResponseApi;
 import uk.gov.companieshouse.documentstore.consumer.apiclient.FilingHistoryDocumentMetadataApiClient;
+import uk.gov.companieshouse.documentstore.consumer.logging.DataMapHolder;
 import uk.gov.companieshouse.documentstore.consumer.transformer.FilingHistoryDocumentMetadataTransformer;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -29,24 +30,22 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
 
     public void process(DocumentStoreDelta documentStore, CreateDocumentResponseApi createDocumentResponseApi) {
         final String contentType = createDocumentResponseApi.getContentType();
+        DataMapHolder.get().filingHistoryDocumentId(createDocumentResponseApi.getDocumentId());
+        DataMapHolder.get().documentStoreContentType(contentType);
 
         // only update filing history with doc metadata link for PDF and ZIP files
         if (CONTENT_TYPE_PDF.equals(contentType) || CONTENT_TYPE_ZIP.equals(contentType)) {
-            LOGGER.info(String.format(
-                    "Updating filing history document metadata for content_type=[%s], document_id=[%s]",
-                    contentType, createDocumentResponseApi.getDocumentId()));
+            LOGGER.info("Updating filing history document metadata", DataMapHolder.getLogMap());
 
             FilingHistoryDocumentMetadataUpdateApi apiRequest = transformer.transform(createDocumentResponseApi);
-            String filingHistoryId = transformer.transformFilingHistoryId(documentStore);
-            fhApiClient.updateDocumentMetadataLink(apiRequest, documentStore.getCompanyNumber(), filingHistoryId);
+            String transactionId = transformer.transformFilingHistoryId(documentStore);
+            DataMapHolder.get().transactionId(transactionId);
 
-            LOGGER.info(String.format(
-                    "Updated filing history document metadata for content_type=[%s], document_id=[%s], filing_history_id=[%s]",
-                    contentType, createDocumentResponseApi.getDocumentId(), filingHistoryId));
+            fhApiClient.updateDocumentMetadataLink(apiRequest, documentStore.getCompanyNumber(), transactionId);
+
+            LOGGER.info("Updated filing history document metadata successfully", DataMapHolder.getLogMap());
             return;
         }
-        LOGGER.info(String.format(
-                "Skipping filing history document metadata for content_type=[%s], document_id=[%s]",
-                contentType, createDocumentResponseApi.getDocumentId()));
+        LOGGER.info("Skipping filing history document metadata", DataMapHolder.getLogMap());
     }
 }

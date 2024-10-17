@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import uk.gov.companieshouse.documentstore.consumer.logging.DataMapHolder;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class InvalidMessageRouter implements ProducerInterceptor<String, Object>
             LOGGER.error("""
                     Republishing record to topic: [%s] \
                     From: original topic: [%s], partition: [%s], offset: [%s], exception: [%s]\
-                    """.formatted(invalidTopic, originalTopic, partition, offset, exception));
+                    """.formatted(invalidTopic, originalTopic, partition, offset, exception), DataMapHolder.getLogMap());
 
             return new ProducerRecord<>(invalidTopic, producerRecord.key(), producerRecord.value());
         }

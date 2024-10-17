@@ -1,9 +1,13 @@
 package uk.gov.companieshouse.documentstore.consumer.mapper;
 
-public class DocumentMapperConstants {
+import java.util.regex.Pattern;
 
+final class DocumentMapperConstants {
 
-    protected static final String TRANSACTION_ID_CHIPS_PREFIX_REGEX = "^CHIPS:";
-    protected static final String TRANSACTION_ID_CHIPS_PREFIX = "CHIPS:";
+    static final Pattern TRANSACTION_ID_CHIPS_PREFIX_REGEX = Pattern.compile("^CHIPS:");
+    static final String TRANSACTION_ID_CHIPS_PREFIX = "CHIPS:";
+
+    private DocumentMapperConstants() {
+    }
 
 }

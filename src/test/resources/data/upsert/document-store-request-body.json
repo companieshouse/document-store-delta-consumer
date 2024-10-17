@@ -1,0 +1,11 @@
+{
+  "transaction_id": "CHIPS:3043972675",
+  "company_number": "12345678",
+  "significant_date": "2014-09-24T00:00:00.00Z",
+  "significant_date_type": "made-up-date",
+  "barcode": "XHJYVXAY",
+  "category": "officers",
+  "pages": 3,
+  "filename": "9616659692.tiff",
+  "stored_image_url": "s3://document-api-images-cidev/9616659692.tiff"
+}

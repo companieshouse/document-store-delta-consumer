@@ -18,7 +18,6 @@ public class DocumentApiMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NAMESPACE);
     private static final String INVALID_PAGES_MESSAGE = "Invalid pages value in delta, pages=[%d]";
-    private static final String INVALID_PAGES_FORMAT_MESSAGE = "Invalid format for pages value in delta, pages=[%s]";
 
     // Ensures filename ends with ".tif", ".tiff", ."pdf" or ".zip" to be allowed to have a value for "pages" field
     private static final String VALID_PAGES_FILENAME_ENDING_REGEX = ".*\\.(tif|tiff|pdf|zip)$";
@@ -27,9 +26,7 @@ public class DocumentApiMapper {
     private static final int DATE_FORMAT_SUBSTRING_LENGTH = 10;
     // parsing from date requires adding time element to expecting "yyyy-MM-dd" string
     private static final String TIME_MIDNIGHT_UTC = "T00:00:00.00Z";
-
-
-    public DocumentApiMapper() {}
+    
 
     public CreateDocumentApi documentStoreDeltaToApi(DocumentStoreDelta delta) {
         LOGGER.trace(String.format("Mapping delta [%s]", delta), DataMapHolder.getLogMap());
@@ -113,7 +110,7 @@ public class DocumentApiMapper {
         String transactionId = delta.getTransactionId();
 
         // ensure "CHIPS:" prefix exists without duplicating it
-        if (!transactionId.matches(TRANSACTION_ID_CHIPS_PREFIX_REGEX)) {
+        if (!TRANSACTION_ID_CHIPS_PREFIX_REGEX.matcher(transactionId).find()) {
             LOGGER.trace(String.format("Mapping prefixed transaction id [%s]", transactionId), DataMapHolder.getLogMap());
             return TRANSACTION_ID_CHIPS_PREFIX + transactionId;
         }

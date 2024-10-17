@@ -19,18 +19,10 @@ public class FilingHistoryDocumentMetadataTransformer {
     }
 
     public FilingHistoryDocumentMetadataUpdateApi transform(CreateDocumentResponseApi response) throws RetryableErrorException {
-        try {
-            return mapper.mapCreateDocumentResponseToLinksUpdate(response);
-        } catch (Exception exception) {
-            throw new RetryableErrorException("Unable to map to Filing History Document Metadata object", exception);
-        }
+        return mapper.mapCreateDocumentResponseToLinksUpdate(response);
     }
 
     public String transformFilingHistoryId(DocumentStoreDelta delta) throws RetryableErrorException {
-        try {
-            return mapper.mapFilingHistoryId(delta);
-        } catch (Exception exception) {
-            throw new RetryableErrorException("Unable to map to Filing History Id", exception);
-        }
+        return mapper.mapFilingHistoryId(delta);
     }
 }
