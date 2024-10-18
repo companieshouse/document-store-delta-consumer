@@ -26,7 +26,7 @@ public class FilingHistoryDocumentMetadataApiClient {
         client.getHttpClient().setRequestId(DataMapHolder.getRequestId());
 
         final String formattedUri = PATCH_REQUEST_URI.formatted(companyNumber, filingHistoryId);
-
+        DataMapHolder.get().resourceUri(formattedUri);
         try {
             client.privateFilingHistoryDocumentMetadataResourceHandler()
                     .patchFilingHistoryLinks(formattedUri, requestBody)

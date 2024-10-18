@@ -30,8 +30,6 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
 
     public void process(DocumentStoreDelta documentStore, CreateDocumentResponseApi createDocumentResponseApi) {
         final String contentType = createDocumentResponseApi.getContentType();
-        DataMapHolder.get().filingHistoryDocumentId(createDocumentResponseApi.getDocumentId());
-        DataMapHolder.get().documentStoreContentType(contentType);
 
         // only update filing history with doc metadata link for PDF and ZIP files
         if (CONTENT_TYPE_PDF.equals(contentType) || CONTENT_TYPE_ZIP.equals(contentType)) {
@@ -40,6 +38,7 @@ public class FilingHistoryDocumentMetadataUpdateProcessor {
             FilingHistoryDocumentMetadataUpdateApi apiRequest = transformer.transform(createDocumentResponseApi);
             String transactionId = transformer.transformFilingHistoryId(documentStore);
             DataMapHolder.get().transactionId(transactionId);
+            DataMapHolder.get().filingHistoryDocumentMetadata(apiRequest.getDocumentMetadata());
 
             fhApiClient.updateDocumentMetadataLink(apiRequest, documentStore.getCompanyNumber(), transactionId);
 
