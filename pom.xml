@@ -16,7 +16,7 @@
 
   <properties>
     <apache-commons-lang3.version>3.18.0</apache-commons-lang3.version>
-    <opentelemetry-instrumentation-bom.version>2.14.0</opentelemetry-instrumentation-bom.version>
+    <opentelemetry-instrumentation-bom.version>2.18.1</opentelemetry-instrumentation-bom.version>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <spring.boot.version>3.5.3</spring.boot.version>
@@ -27,6 +27,9 @@
     <maven-failsafe-plugin.version>${maven-surefire.version}</maven-failsafe-plugin.version>
     <commons-text.version>1.14.0</commons-text.version>
     <wiremock.version>3.13.1</wiremock.version>
+
+    <!--Remove once CVE is fixed in spring-starter-web package, see dependency for CVE info-->
+    <tomcat-embed-override.version>11.0.10</tomcat-embed-override.version>
 
     <skip.unit.tests>false</skip.unit.tests>
     <skip.integration.tests>false</skip.integration.tests>
@@ -242,6 +245,18 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
+    </dependency>
+    <!--Added to override version from spring starter web-->
+    <!--CVE-2025-52520(7.5), CVE-2025-53506(7.5)-->
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>${tomcat-embed-override.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-websocket</artifactId>
+      <version>${tomcat-embed-override.version}</version>
     </dependency>
 
   </dependencies>
