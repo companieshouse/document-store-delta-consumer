@@ -15,6 +15,7 @@
   <packaging>jar</packaging>
 
   <properties>
+    <grpc.version>1.73.0</grpc.version>
     <apache-commons-lang3.version>3.18.0</apache-commons-lang3.version>
     <opentelemetry-instrumentation-bom.version>2.18.1</opentelemetry-instrumentation-bom.version>
     <maven.compiler.source>21</maven.compiler.source>
@@ -80,9 +81,13 @@
   <dependencies>
     <!--the following transitive dependencies are added specifically to avoid vulnerabilities-->
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
-      <version>1.73.0</version>
+      <version>${grpc.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
