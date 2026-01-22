@@ -46,6 +46,7 @@
     <json-smart.version>2.5.2</json-smart.version>
     <gson.version>2.12.1</gson.version>
     <grpc-api.version>1.68.1</grpc-api.version>
+    <grpc-context.version>1.68.1</grpc-context.version>
     <log4j.version>2.25.3</log4j.version>
     <!-- TODO: lz4-java CVEs (CVE-2025-12183, CVE-2025-66566) require at.yawk.lz4:lz4-java:1.10.1
          The original org.lz4:lz4-java is discontinued. The artifact at.yawk.lz4:lz4-java:1.10.1
@@ -128,6 +129,11 @@
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
       <version>${grpc-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-context</artifactId>
+      <version>${grpc-context.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
