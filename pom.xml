@@ -30,24 +30,15 @@
     <skip.integration.tests>false</skip.integration.tests>
 
     <!--companies house-->
-    <structured-logging.version>3.0.18</structured-logging.version>
+    <structured-logging.version>3.0.47</structured-logging.version>
     <sdk-manager-java.version>3.0.9</sdk-manager-java.version>
-    <private-api-sdk-java.version>4.0.256</private-api-sdk-java.version>
-    <data-sync-api-sdk-java.version>1.0.8</data-sync-api-sdk-java.version>
-    <kafka-models.version>3.0.8</kafka-models.version>
+    <private-api-sdk-java.version>4.0.443</private-api-sdk-java.version>
+    <data-sync-api-sdk-java.version>1.0.10</data-sync-api-sdk-java.version>
+    <kafka-models.version>3.0.26</kafka-models.version>
 
     <!--explicit versions of transitive dependencies with vulnerabilities in previous versions-->
     <xmlunit-core.version>2.10.0</xmlunit-core.version>
     <avro.version>1.12.0</avro.version>
-    <commons-beanutils.version>1.11.0</commons-beanutils.version>
-    <commons-lang3.version>3.18.0</commons-lang3.version>
-    <jose4j.version>0.9.6</jose4j.version>
-    <msgpack-core.version>0.9.11</msgpack-core.version>
-    <json-smart.version>2.5.2</json-smart.version>
-    <gson.version>2.12.1</gson.version>
-    <grpc-api.version>1.68.1</grpc-api.version>
-    <grpc-context.version>1.68.1</grpc-context.version>
-    <log4j.version>2.25.3</log4j.version>
     <!-- TODO: lz4-java CVEs (CVE-2025-12183, CVE-2025-66566) require at.yawk.lz4:lz4-java:1.10.1
          The original org.lz4:lz4-java is discontinued. The artifact at.yawk.lz4:lz4-java:1.10.1
          needs to be added to the company's artifact repository to fix these vulnerabilities -->
@@ -89,56 +80,6 @@
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
       <version>${xmlunit-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>${commons-beanutils.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons-lang3.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
-      <version>${jose4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.msgpack</groupId>
-      <artifactId>msgpack-core</artifactId>
-      <version>${msgpack-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.minidev</groupId>
-      <artifactId>json-smart</artifactId>
-      <version>${json-smart.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>${gson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-api</artifactId>
-      <version>${grpc-api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.grpc</groupId>
-      <artifactId>grpc-context</artifactId>
-      <version>${grpc-context.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>${log4j.version}</version>
     </dependency>
     <!--end transitive dependencies-->
 
