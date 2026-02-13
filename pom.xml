@@ -38,7 +38,7 @@
 
     <!--explicit versions of transitive dependencies with vulnerabilities in previous versions-->
     <xmlunit-core.version>2.10.0</xmlunit-core.version>
-    <avro.version>1.12.0</avro.version>
+    <avro.version>1.12.1</avro.version>
     <!-- TODO: lz4-java CVEs (CVE-2025-12183, CVE-2025-66566) require at.yawk.lz4:lz4-java:1.10.1
          The original org.lz4:lz4-java is discontinued. The artifact at.yawk.lz4:lz4-java:1.10.1
          needs to be added to the company's artifact repository to fix these vulnerabilities -->
