@@ -152,7 +152,7 @@ This will get re-added if the Postman post request is successful.
   "page_count": 3
 }
 ```
-and a URL:
+&nbsp;&nbsp;&nbsp;&nbsp; and a URL:
 ```
 {{API_GATEWAY}}/delta/document-store
 ```
