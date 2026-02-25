@@ -101,44 +101,44 @@ Key environment variables (see `docker-compose.yaml` for full list):
 
 ## Docker
 1. Remove any enabled modules in Docker using:\
-```
+```bash
 chs-dev status
 chs-dev modules disable <module_you_have_currently_enabled>
 ```
 2. Enable the ‘delta’ module in Docker
-```
+```bash
 chs-dev modules enable delta
 ```
 
 3. (Optional) If you want to make changes to document-store-delta-consumer, clone this git repository and enable development mode in docker with
-```
+```bash
 chs-dev development enable document-store-delta-consumer
 ```
 
 4. Start Docker
-```
+```bash
 chs-dev up
 ```
 
 5. Open your MongoDB app and connect to the Docker DB
 
-6. Open the ```company-filing-history/company-filing-history``` collection
+6. Open the `company-filing-history/company-filing-history` collection
 
-7. Find the record with the following id: ```_id: "MzA0Mzk3MjY3NWFkaXF6a2N4"```\
+7. Find the record with the following id: `_id: "MzA0Mzk3MjY3NWFkaXF6a2N4"`\
 It should have :
 ```company_number: "12345678"```
 
-8. Expand the record's fields and delete the ```data.links.document_metadata``` field if it has one.\
+8. Expand the record's fields and delete the `data.links.document_metadata` field if it has one.\
 This will get re-added if the Postman post request is successful.
 
-9. Make a note of the ```version``` value on this record, it should increase by one when you submit via Postman.
+9. Make a note of the `version` value on this record, it should increase by one when you submit via Postman.
 
 10. Open Postman and open/log into the Team Workspace.
 
 11. Open the folder “Data Sync/Document Store” and there should be a Post request already saved there, open it.
 
 12. It should have a body that looks like :
-```
+```json
 {
   "category": "officers",
   "significant_date": "2014-09-24'T'00:00:00.000Z",
@@ -161,7 +161,7 @@ This will get re-added if the Postman post request is successful.
 
 14. You should see a 200 OK response in Postman
 
-15. Check the ```document-store-delta-consumer``` logs in Docker, you should see no errors, and you should see entries like:
+15. Check the `document-store-delta-consumer` logs in Docker, you should see no errors, and you should see entries like:
 ```
 trace: Mapping delta [class DocumentStoreDelta
 trace:  Mapping valid page count [3]
@@ -170,4 +170,4 @@ info: Updating filing history document metadata
 info: Updated filing history document metadata successfully
 info: Processed delta
 ```
-16. Check the record in Mongo DB again, it should now have the ```document_metadata``` link added and the ```version number``` should increase by one.
+16. Check the record in Mongo DB again, it should now have the `document_metadata` link added and the `version number` should increase by one.
