@@ -100,7 +100,7 @@ Key environment variables (see `docker-compose.yaml` for full list):
 | `DOCUMENT_API_URL` | - | Document API URL |
 
 ## Docker
-1. Remove any enabled modules in Docker using:\
+1. Remove any enabled modules in Docker using:
 ```bash
 chs-dev status
 chs-dev modules disable <module_you_have_currently_enabled>
@@ -170,4 +170,4 @@ info: Updating filing history document metadata
 info: Updated filing history document metadata successfully
 info: Processed delta
 ```
-16. Check the record in Mongo DB again, it should now have the `document_metadata` link added and the `version number` should increase by one.
+16. Check the record in Mongo DB again, it should now have the `document_metadata` link added and the `version` number should increase by one.
