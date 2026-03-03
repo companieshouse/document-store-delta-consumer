@@ -30,7 +30,7 @@
     <skip.integration.tests>false</skip.integration.tests>
 
     <!--companies house-->
-    <structured-logging.version>3.0.47</structured-logging.version>
+    <structured-logging.version>3.0.51</structured-logging.version>
     <sdk-manager-java.version>3.0.9</sdk-manager-java.version>
     <private-api-sdk-java.version>4.0.443</private-api-sdk-java.version>
     <data-sync-api-sdk-java.version>1.0.10</data-sync-api-sdk-java.version>
@@ -95,11 +95,6 @@
       <groupId>org.bitbucket.b_c</groupId>
       <artifactId>jose4j</artifactId>
       <version>0.9.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.msgpack</groupId>
-      <artifactId>msgpack-core</artifactId>
-      <version>0.9.11</version>
     </dependency>
     <!--end transitive dependencies-->
 
