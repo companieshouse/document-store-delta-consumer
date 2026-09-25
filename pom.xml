@@ -5,7 +5,7 @@
   <parent>
     <groupId>uk.gov.companieshouse</groupId>
     <artifactId>companies-house-parent</artifactId>
-    <version>2.1.12</version>
+    <version>2.1.20</version>
     <relativePath/>
   </parent>
 
@@ -17,31 +17,27 @@
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
-    <spring.boot.version>4.0.7</spring.boot.version>
-    <ch-dependency-bom.version>0.1.10</ch-dependency-bom.version>
-    <!-- Override the tomcat-embed-core version managed by the spring-boot-dependencies BOM
-         to fix CVE-2026-50229, CVE-2026-55276, CVE-2026-53434, CVE-2026-53404, CVE-2026-55956,
-         CVE-2026-55955. Drop once a Spring Boot 4.0.x patch bumps Tomcat for us. -->
-    <tomcat.version>11.0.23</tomcat.version>
+    <spring.boot.version>4.1.1</spring.boot.version>
+    <ch-dependency-bom.version>0.1.25</ch-dependency-bom.version>
     <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
     <maven-surefire.version>3.5.1</maven-surefire.version>
     <maven-surefire-plugin.version>${maven-surefire.version}</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>${maven-surefire.version}</maven-failsafe-plugin.version>
     <commons-text.version>1.15.0</commons-text.version>
     <wiremock.version>3.9.1</wiremock.version>
+    <httpcore.version>4.4.16</httpcore.version>
+    <httpclient.version>4.5.14</httpclient.version>
 
     <skip.unit.tests>false</skip.unit.tests>
     <skip.integration.tests>false</skip.integration.tests>
 
     <!--companies house-->
-    <private-api-sdk-java.version>7.0.4</private-api-sdk-java.version>
-    <data-sync-api-sdk-java.version>1.0.10</data-sync-api-sdk-java.version>
+    <private-api-sdk-java.version>7.2.29</private-api-sdk-java.version>
+    <data-sync-api-sdk-java.version>1.0.18</data-sync-api-sdk-java.version>
+    <sdk-manager-java.version>4.0.0</sdk-manager-java.version>
 
     <!--explicit versions of transitive dependencies with vulnerabilities in previous versions-->
-    <xmlunit-core.version>2.10.0</xmlunit-core.version>
-    <avro.version>1.12.1</avro.version>
-    <lz4-java-fork.version>1.10.2</lz4-java-fork.version>
-    <guava.version>33.6.0-jre</guava.version>
+    <guava.version>33.7.0-jre</guava.version>
 
     <!--sonar configuration-->
     <sonar.coverage.jacoco.xmlReportPaths>
@@ -68,75 +64,18 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Override every tomcat-embed-* artifact managed by spring-boot-dependencies
-           to fix CVE-2026-50229, CVE-2026-55276, CVE-2026-53434, CVE-2026-53404,
-           CVE-2026-55956, CVE-2026-55955. The CVEs apply to Tomcat itself, so every
-           tomcat-embed-* sibling is flagged at the same version. A <tomcat.version>
-           property override has no effect on imported BOMs (only on parent
-           inheritance), so each artifact must be pinned via an explicit
-           dependencyManagement entry. Drop once a Spring Boot 4.0.x patch bumps
-           Tomcat for us. -->
+
+      <!-- Pinning version (and switching android -> jre flavour) to address CVE-2020-8908;
+        pulled in transitively by sdk-manager-java -->
       <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-el</artifactId>
-        <version>${tomcat.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-websocket</artifactId>
-        <version>${tomcat.version}</version>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
-    <!--the following transitive dependencies are added specifically to avoid vulnerabilities-->
-    <dependency>
-      <groupId>org.apache.avro</groupId>
-      <artifactId>avro</artifactId>
-      <version>${avro.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-core</artifactId>
-      <version>${xmlunit-core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.19.0</version>
-    </dependency>
-    <!-- Pinning version to address CVE-2026-34477, CVE-2026-34479 -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.25.4</version>
-    </dependency>
-    <!-- Pinning version (and switching android -> jre flavour) to address CVE-2023-2976;
-         pulled in transitively by kafka-models -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
-      <version>0.9.6</version>
-    </dependency>
-    <!-- Pinning version to address CVE-2025-67030 (directory traversal in Expand.extractFile) -->
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>4.0.3</version>
-    </dependency>
-    <!--end transitive dependencies-->
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
@@ -144,20 +83,6 @@
     <dependency>
       <groupId>org.springframework.kafka</groupId>
       <artifactId>spring-kafka</artifactId>
-      <exclusions>
-        <!-- org.lz4:lz4-java 1.8.0 is abandoned upstream; replaced below with maintained fork.
-             CVE-2025-12183, CVE-2025-66566, GHSA-cmp6-m4wj-q63q, GHSA-vqf4-7m7x-wgfc -->
-        <exclusion>
-          <groupId>org.lz4</groupId>
-          <artifactId>lz4-java</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- Drop-in API-compatible community fork of the abandoned org.lz4:lz4-java -->
-    <dependency>
-      <groupId>at.yawk.lz4</groupId>
-      <artifactId>lz4-java</artifactId>
-      <version>${lz4-java-fork.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -183,6 +108,7 @@
     <dependency>
       <groupId>uk.gov.companieshouse</groupId>
       <artifactId>sdk-manager-java</artifactId>
+      <version>${sdk-manager-java.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-collections</groupId>
@@ -244,7 +170,18 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>${httpcore.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${httpclient.version}</version>
+    </dependency>
 
+    <!-- Test dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
