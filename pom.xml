@@ -25,8 +25,6 @@
     <maven-failsafe-plugin.version>${maven-surefire.version}</maven-failsafe-plugin.version>
     <commons-text.version>1.15.0</commons-text.version>
     <wiremock.version>3.9.1</wiremock.version>
-    <httpcore.version>4.4.16</httpcore.version>
-    <httpclient.version>4.5.14</httpclient.version>
 
     <skip.unit.tests>false</skip.unit.tests>
     <skip.integration.tests>false</skip.integration.tests>
@@ -169,16 +167,6 @@
           <artifactId>commons-compress</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>${httpcore.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>${httpclient.version}</version>
     </dependency>
 
     <!-- Test dependencies -->
