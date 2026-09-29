@@ -63,6 +63,8 @@
         <scope>import</scope>
       </dependency>
 
+      <!-- Overrides -->
+
       <!-- Pinning version (and switching android -> jre flavour) to address CVE-2020-8908;
         pulled in transitively by sdk-manager-java -->
       <dependency>
@@ -70,6 +72,15 @@
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
       </dependency>
+
+      <!-- CVE-2026-59949 override for lz4-java, pulled in transitively by org.springframework.kafka:spring-kafka:jar:4.1.1:compile  -->
+      <dependency>
+        <groupId>at.yawk.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>1.12.0</version>
+      </dependency>
+
+      <!-- End of overrides -->
     </dependencies>
   </dependencyManagement>
 
