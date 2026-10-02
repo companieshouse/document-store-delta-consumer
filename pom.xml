@@ -18,7 +18,6 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <spring.boot.version>4.1.1</spring.boot.version>
-    <ch-dependency-bom.version>0.1.25</ch-dependency-bom.version>
     <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
     <maven-surefire.version>3.5.1</maven-surefire.version>
     <maven-surefire-plugin.version>${maven-surefire.version}</maven-surefire-plugin.version>
@@ -30,8 +29,9 @@
     <skip.integration.tests>false</skip.integration.tests>
 
     <!--companies house-->
-    <private-api-sdk-java.version>7.2.29</private-api-sdk-java.version>
-    <data-sync-api-sdk-java.version>1.0.18</data-sync-api-sdk-java.version>
+    <ch-dependency-bom.version>0.1.27</ch-dependency-bom.version>
+    <private-api-sdk-java.version>7.2.31</private-api-sdk-java.version>
+    <data-sync-api-sdk-java.version>2.0.0</data-sync-api-sdk-java.version>
     <sdk-manager-java.version>4.0.0</sdk-manager-java.version>
 
     <!--explicit versions of transitive dependencies with vulnerabilities in previous versions-->
