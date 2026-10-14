@@ -31,7 +31,7 @@
     <!--companies house-->
     <ch-dependency-bom.version>0.1.27</ch-dependency-bom.version>
     <private-api-sdk-java.version>7.2.31</private-api-sdk-java.version>
-    <data-sync-api-sdk-java.version>2.0.0</data-sync-api-sdk-java.version>
+    <data-sync-api-sdk-java.version>2.0.1</data-sync-api-sdk-java.version>
     <sdk-manager-java.version>4.0.0</sdk-manager-java.version>
 
     <!--explicit versions of transitive dependencies with vulnerabilities in previous versions-->
